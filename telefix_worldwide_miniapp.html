@@ -1,0 +1,432 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>TeleFixPro</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root{
+  --bg:#08080E;--bg2:#0D0D18;--bg3:#121220;--surf:#171724;--surf2:#1D1D2E;
+  --bd:rgba(255,255,255,0.06);--bd2:rgba(255,255,255,0.11);
+  --acc:#00E5A0;--acc2:#7C6EF5;--acc3:#FF6363;--gold:#F5C842;
+  --txt:#EEEDF8;--txt2:#9895B5;--txt3:#52506A;
+  --r:15px;--rs:10px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--bg);color:var(--txt);font-family:'DM Sans',sans-serif;font-size:15px;min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+.orbs{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.o{position:absolute;border-radius:50%;filter:blur(100px);opacity:.13;animation:drft 15s ease-in-out infinite alternate}
+.o1{width:380px;height:380px;background:var(--acc2);top:-130px;right:-110px}
+.o2{width:300px;height:300px;background:var(--acc);bottom:20%;left:-110px;animation-delay:-6s}
+.o3{width:200px;height:200px;background:var(--acc3);bottom:-50px;right:10%;opacity:.08;animation-delay:-11s}
+@keyframes drft{0%{transform:translate(0,0) scale(1)}100%{transform:translate(20px,30px) scale(1.08)}}
+.app{position:relative;z-index:1;max-width:430px;margin:0 auto;padding:0 0 110px}
+.scr{display:none;animation:fadeUp .28s ease}
+.scr.on{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(13px)}to{opacity:1;transform:translateY(0)}}
+
+/* HEADER */
+.hdr{padding:18px 16px 12px;display:flex;align-items:center;gap:11px}
+.logo{width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,var(--acc2),var(--acc));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:#fff;flex-shrink:0;letter-spacing:-.3px}
+.htxt{flex:1}
+.htitle{font-family:'Syne',sans-serif;font-weight:700;font-size:16px;letter-spacing:-.3px}
+.hsub{font-size:11px;color:var(--txt2);margin-top:1px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--acc);box-shadow:0 0 8px var(--acc);animation:pls 2s ease-in-out infinite;flex-shrink:0}
+@keyframes pls{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* HERO */
+.hero{margin:0 14px 16px;background:var(--surf);border:.5px solid var(--bd2);border-radius:var(--r);padding:17px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--acc2),var(--acc),transparent);opacity:.5}
+.hlbl{font-size:10px;font-weight:500;letter-spacing:1.8px;text-transform:uppercase;color:var(--acc);margin-bottom:6px}
+.hhd{font-family:'Syne',sans-serif;font-weight:700;font-size:20px;line-height:1.2;letter-spacing:-.4px}
+.hhd span{color:var(--acc)}
+.hdesc{font-size:12px;color:var(--txt2);margin-top:6px;line-height:1.6}
+.stats{display:flex;gap:20px;margin-top:13px}
+.stn{font-family:'Syne',sans-serif;font-weight:700;font-size:18px;letter-spacing:-.5px;display:block}
+.stl{font-size:10px;color:var(--txt3);margin-top:1px;display:block}
+
+/* SECTION TITLE */
+.sh{padding:0 17px 9px}
+.stitle{font-family:'Syne',sans-serif;font-weight:600;font-size:11px;letter-spacing:.8px;text-transform:uppercase;color:var(--txt3)}
+
+/* SERVICE CARDS */
+.svcs{padding:0 14px;display:flex;flex-direction:column;gap:8px;margin-bottom:18px}
+.sc{background:var(--surf);border:.5px solid var(--bd);border-radius:var(--r);padding:13px;display:flex;align-items:center;gap:11px;cursor:pointer;transition:all .17s ease;position:relative;overflow:hidden}
+.sc:active{transform:scale(.985);background:var(--surf2)}
+.sc.sel{border-color:var(--acc);background:rgba(0,229,160,.04)}
+.sc.sel .ico{background:rgba(0,229,160,.13)}
+.ico{width:40px;height:40px;border-radius:10px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;transition:background .2s}
+.si{flex:1;min-width:0}
+.sn{font-family:'Syne',sans-serif;font-weight:600;font-size:13px;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sd{font-size:11px;color:var(--txt2);margin-top:2px;line-height:1.4}
+.sr{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0}
+.sp{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--txt)}
+.stm{font-size:10px;color:var(--txt3);background:var(--bg3);padding:2px 6px;border-radius:99px}
+.chk{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--bd2);display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+.sel .chk{background:var(--acc);border-color:var(--acc)}
+.chk svg{opacity:0;transition:opacity .2s}.sel .chk svg{opacity:1}
+
+/* URGENCY */
+.urg{padding:0 14px;margin-bottom:18px}
+.uc{background:var(--surf);border:.5px solid var(--bd);border-radius:var(--r);padding:12px 14px;display:flex;align-items:center;justify-content:space-between}
+.ul{display:flex;align-items:center;gap:9px}
+.uit{font-size:13px;font-weight:500;color:var(--txt)}
+.uis{font-size:11px;color:var(--txt2);margin-top:1px}
+.uip{font-size:11px;font-weight:500;color:var(--acc3);margin-top:1px}
+.tgl{position:relative;width:43px;height:24px}
+.tgl input{opacity:0;width:0;height:0}
+.trk{position:absolute;inset:0;background:var(--bg3);border:1px solid var(--bd2);border-radius:99px;cursor:pointer;transition:all .2s}
+.trk::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:var(--txt3);transition:all .2s}
+.tgl input:checked+.trk{background:rgba(255,99,99,.18);border-color:var(--acc3)}
+.tgl input:checked+.trk::after{transform:translateX(19px);background:var(--acc3)}
+
+/* TRUST */
+.trust{display:flex;gap:6px;padding:0 14px;margin-bottom:18px;flex-wrap:wrap}
+.tb{display:flex;align-items:center;gap:5px;background:var(--surf);border:.5px solid var(--bd);border-radius:99px;padding:5px 9px;font-size:10px;color:var(--txt2)}
+.tbd{width:5px;height:5px;border-radius:50%}
+
+/* BOTTOM BAR */
+.bot{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;padding:10px 14px 20px;background:linear-gradient(to top,var(--bg) 60%,transparent);z-index:100}
+.btn{width:100%;padding:15px;border:none;border-radius:var(--r);background:linear-gradient(135deg,var(--acc2),var(--acc));color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;letter-spacing:.3px;cursor:pointer;position:relative;overflow:hidden;transition:all .17s;display:flex;align-items:center;justify-content:center;gap:7px}
+.btn:active{transform:scale(.98);opacity:.9}
+.btn.dis{background:var(--surf2);color:var(--txt3);cursor:not-allowed;pointer-events:none}
+.btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.12) 0%,transparent 55%);pointer-events:none}
+
+/* FORM */
+.fsec{padding:0 14px;margin-bottom:16px}
+.fg{margin-bottom:10px}
+.fl{font-size:10px;color:var(--txt3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px;display:block}
+.fi,.fta,.fsel{width:100%;background:var(--surf);border:.5px solid var(--bd);border-radius:var(--rs);color:var(--txt);font-family:'DM Sans',sans-serif;font-size:14px;padding:11px 12px;outline:none;transition:border-color .2s;-webkit-appearance:none}
+.fi:focus,.fta:focus,.fsel:focus{border-color:var(--acc2)}
+.fi::placeholder,.fta::placeholder{color:var(--txt3)}
+.fta{resize:none;height:82px;line-height:1.5}
+.fsel{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2352506A' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;cursor:pointer}
+.fsel option{background:var(--bg);color:var(--txt)}
+
+/* SUMMARY */
+.ssum{padding:0 14px;margin-bottom:16px}
+.scard{background:var(--surf);border:.5px solid var(--bd);border-radius:var(--r);overflow:hidden}
+.srow{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:.5px solid var(--bd);font-size:13px}
+.srow:last-child{border-bottom:none}
+.slbl{color:var(--txt2)}.sval{color:var(--txt);font-weight:500}
+.stot{background:rgba(0,229,160,.04)}
+.stot .slbl{font-family:'Syne',sans-serif;font-weight:600;font-size:13px;color:var(--txt)}
+.stot .sval{font-family:'Syne',sans-serif;font-weight:700;font-size:17px;color:var(--acc)}
+
+/* PAYMENT SCREEN */
+.pmtscr{padding:0 14px;margin-bottom:18px}
+.pmthdr{font-family:'Syne',sans-serif;font-weight:700;font-size:18px;color:var(--txt);margin-bottom:4px;letter-spacing:-.3px}
+.pmtsub{font-size:13px;color:var(--txt2);margin-bottom:16px;line-height:1.5}
+.pcard{background:var(--surf);border:.5px solid var(--bd);border-radius:var(--r);padding:15px;margin-bottom:10px;position:relative;overflow:hidden}
+.pcard::before{content:'';position:absolute;top:0;left:0;right:0;height:1px}
+.pcard.usdt::before{background:linear-gradient(90deg,transparent,#26A17B,transparent)}
+.plbl{font-size:10px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:7px}
+.pcard.usdt .plbl{color:#26A17B}
+.pname{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;color:var(--txt);margin-bottom:3px}
+.pdesc{font-size:12px;color:var(--txt2);margin-bottom:11px;line-height:1.5}
+.paddr{background:var(--bg3);border:.5px solid var(--bd2);border-radius:var(--rs);padding:11px 50px 11px 12px;font-size:11px;color:var(--txt);word-break:break-all;line-height:1.7;position:relative}
+.pcopy{position:absolute;top:8px;right:8px;background:var(--surf2);border:.5px solid var(--bd2);border-radius:6px;padding:4px 8px;font-size:10px;color:var(--txt2);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s}
+.pcopy:active,.pcopy.copied{background:var(--acc2);color:#fff}
+.pamt{margin-top:10px;display:flex;align-items:center;justify-content:space-between}
+.pamtlbl{font-size:12px;color:var(--txt2)}
+.pamtval{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;color:var(--gold)}
+.pnote{background:rgba(245,200,66,.05);border:.5px solid rgba(245,200,66,.18);border-radius:var(--rs);padding:11px 12px;font-size:12px;color:#C8A830;line-height:1.6;margin-bottom:14px}
+.pnote strong{color:var(--gold)}
+
+/* SUCCESS */
+.sucwrap{min-height:85vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 18px;text-align:center}
+.sucico{width:74px;height:74px;border-radius:50%;background:rgba(0,229,160,.1);border:1px solid rgba(0,229,160,.28);display:flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:20px;animation:popIn .5s cubic-bezier(.34,1.56,.64,1)}
+@keyframes popIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+.suctitle{font-family:'Syne',sans-serif;font-weight:700;font-size:22px;color:var(--txt);margin-bottom:9px}
+.sucdesc{font-size:13px;color:var(--txt2);line-height:1.6;max-width:270px}
+.sucref{margin-top:18px;padding:9px 20px;background:var(--surf);border:.5px solid var(--bd);border-radius:var(--rs);font-family:'Syne',sans-serif;font-weight:600;font-size:12px;color:var(--acc);letter-spacing:1px}
+.sucsteps{width:100%;margin-top:22px;background:var(--surf);border:.5px solid var(--bd);border-radius:var(--r);padding:13px;text-align:left}
+.ssteph{font-family:'Syne',sans-serif;font-weight:600;font-size:12px;color:var(--txt);margin-bottom:7px}
+.sstep{display:flex;align-items:flex-start;gap:8px;padding:6px 0}
+.sstep:not(:last-child){border-bottom:.5px solid var(--bd)}
+.snum{width:19px;height:19px;border-radius:50%;background:rgba(124,110,245,.2);color:var(--acc2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;margin-top:1px}
+.stxt{font-size:12px;color:var(--txt2);line-height:1.5}
+.stxt strong{color:var(--txt);font-weight:500}
+::-webkit-scrollbar{width:0}
+</style>
+</head>
+<body>
+<div class="orbs"><div class="o o1"></div><div class="o o2"></div><div class="o o3"></div></div>
+
+<!-- ══════ SCREEN 1: HOME ══════ -->
+<div id="s-home" class="scr on">
+<div class="app">
+  <div class="hdr">
+    <div class="logo">TF</div>
+    <div class="htxt"><div class="htitle">TeleFixPro</div><div class="hsub">Expert Telegram Support — Worldwide</div></div>
+    <div class="dot"></div>
+  </div>
+
+  <div class="hero">
+    <div class="hlbl">⭐ Trusted by 30,000+ Followers</div>
+    <div class="hhd">Fix Your Telegram<br><span>Problems Fast</span></div>
+    <div class="hdesc">Professional solutions for any Telegram issue. Delivered directly on Telegram, worldwide.</div>
+    <div class="stats">
+      <div><span class="stn">500+</span><span class="stl">Issues Solved</span></div>
+      <div><span class="stn">4.9★</span><span class="stl">Rating</span></div>
+      <div><span class="stn">&lt;2hr</span><span class="stl">Response</span></div>
+    </div>
+  </div>
+
+  <div class="sh"><span class="stitle">Choose a Service</span></div>
+
+  <div class="svcs">
+    <div class="sc" data-id="restriction" data-price="3" data-name="Account Restriction Fix" onclick="selSvc(this)">
+      <div class="ico">🚫</div>
+      <div class="si"><div class="sn">Account Restriction Fix</div><div class="sd">"Mutual contacts only" error, spam limit, sending blocked</div></div>
+      <div class="sr"><div class="sp">$3</div><div class="stm">~1 hr</div></div>
+      <div class="chk"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="#08080E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    </div>
+    <div class="sc" data-id="connection" data-price="3" data-name="Connection Problem Fix" onclick="selSvc(this)">
+      <div class="ico">🔌</div>
+      <div class="si"><div class="sn">Connection Problem Fix</div><div class="sd">Stuck on connecting, slow loading, keeps disconnecting</div></div>
+      <div class="sr"><div class="sp">$3</div><div class="stm">~1 hr</div></div>
+      <div class="chk"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="#08080E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    </div>
+    <div class="sc" data-id="messages" data-price="3" data-name="Message Sending Fix" onclick="selSvc(this)">
+      <div class="ico">💬</div>
+      <div class="si"><div class="sn">Message Sending Fix</div><div class="sd">Messages not sending, stuck on clock icon, delivery failed</div></div>
+      <div class="sr"><div class="sp">$3</div><div class="stm">~1 hr</div></div>
+      <div class="chk"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="#08080E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    </div>
+    <div class="sc" data-id="banned" data-price="5" data-name="Account Ban Recovery" onclick="selSvc(this)">
+      <div class="ico">⛔</div>
+      <div class="si"><div class="sn">Account Ban Recovery</div><div class="sd">Account banned, permanently limited, spam reports</div></div>
+      <div class="sr"><div class="sp">$5</div><div class="stm">~2 hrs</div></div>
+      <div class="chk"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="#08080E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    </div>
+    <div class="sc" data-id="2fa" data-price="4" data-name="2FA / Login Help" onclick="selSvc(this)">
+      <div class="ico">🔐</div>
+      <div class="si"><div class="sn">2FA / Login Help</div><div class="sd">Lost 2FA password, can't login, verification issues</div></div>
+      <div class="sr"><div class="sp">$4</div><div class="stm">~1.5 hrs</div></div>
+      <div class="chk"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="#08080E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    </div>
+    <div class="sc" data-id="bot" data-price="10" data-name="Bot / Channel Setup" onclick="selSvc(this)">
+      <div class="ico">🤖</div>
+      <div class="si"><div class="sn">Bot / Channel Setup</div><div class="sd">Create & configure bots, channels, automated groups</div></div>
+      <div class="sr"><div class="sp">$10</div><div class="stm">~3 hrs</div></div>
+      <div class="chk"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="#08080E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    </div>
+    <div class="sc" data-id="other" data-price="3" data-name="Custom / Other Issue" onclick="selSvc(this)">
+      <div class="ico">⚙️</div>
+      <div class="si"><div class="sn">Custom / Other Issue</div><div class="sd">Any Telegram problem — describe it and we'll solve it</div></div>
+      <div class="sr"><div class="sp">From $3</div><div class="stm">Varies</div></div>
+      <div class="chk"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="#08080E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    </div>
+  </div>
+
+  <div class="urg">
+    <div class="uc">
+      <div class="ul">
+        <span style="font-size:19px">⚡</span>
+        <div><div class="uit">Express / Priority Help</div><div class="uis">Response within 30 minutes</div><div class="uip">+$2 extra</div></div>
+      </div>
+      <label class="tgl"><input type="checkbox" id="urg-tog" onchange="updTotal()"><span class="trk"></span></label>
+    </div>
+  </div>
+
+  <div class="trust">
+    <div class="tb"><div class="tbd" style="background:var(--acc)"></div>Secure USDT Payment</div>
+    <div class="tb"><div class="tbd" style="background:var(--acc2)"></div>Money-Back Guarantee</div>
+    <div class="tb"><div class="tbd" style="background:var(--gold)"></div>Worldwide Support</div>
+    <div class="tb"><div class="tbd" style="background:var(--acc3)"></div>24/7 Available</div>
+  </div>
+</div>
+<div class="bot">
+  <button class="btn dis" id="home-cta" onclick="goToForm()">Select a Service to Continue →</button>
+</div>
+</div>
+
+<!-- ══════ SCREEN 2: FORM ══════ -->
+<div id="s-form" class="scr">
+<div class="app">
+  <div class="hdr">
+    <button onclick="goBack('s-home')" style="background:var(--surf);border:.5px solid var(--bd);border-radius:9px;width:35px;height:35px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M9.5 12.5L4.5 7.5l5-5" stroke="var(--txt2)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="htxt"><div class="htitle">Your Details</div><div class="hsub">Step 2 of 3</div></div>
+  </div>
+
+  <div class="ssum">
+    <div class="scard">
+      <div class="srow"><span class="slbl">Service</span><span class="sval" id="sum-svc">—</span></div>
+      <div class="srow"><span class="slbl">Priority</span><span class="sval" id="sum-pri">Standard</span></div>
+      <div class="srow stot"><span class="slbl">Total</span><span class="sval" id="sum-tot">—</span></div>
+    </div>
+  </div>
+
+  <div class="fsec">
+    <div class="fg"><label class="fl">Your Name</label><input class="fi" type="text" id="f-name" placeholder="e.g. John Smith"></div>
+    <div class="fg"><label class="fl">Telegram Username</label><input class="fi" type="text" id="f-user" placeholder="@yourusername"></div>
+    <div class="fg"><label class="fl">Describe Your Problem</label><textarea class="fta" id="f-desc" placeholder="Explain what's happening in detail — the more info, the faster we fix it..."></textarea></div>
+  </div>
+</div>
+<div class="bot">
+  <button class="btn" onclick="goToPayment()">Continue to Payment →</button>
+</div>
+</div>
+
+<!-- ══════ SCREEN 3: PAYMENT ══════ -->
+<div id="s-payment" class="scr">
+<div class="app">
+  <div class="hdr">
+    <button onclick="goBack('s-form')" style="background:var(--surf);border:.5px solid var(--bd);border-radius:9px;width:35px;height:35px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M9.5 12.5L4.5 7.5l5-5" stroke="var(--txt2)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="htxt"><div class="htitle">Payment</div><div class="hsub">Step 3 of 3</div></div>
+  </div>
+
+  <div class="pmtscr">
+    <div class="pmthdr">Send Payment</div>
+    <div class="pmtsub">Send the exact amount below, then tap <strong style="color:var(--txt)">"I've Paid"</strong> to confirm your booking.</div>
+
+    <div class="pnote">
+      ⚠️ <strong>Important:</strong> Send the <strong>exact amount</strong> shown. After payment, tap "I've Paid" — your session will start once payment is verified (usually within 10 minutes).
+    </div>
+
+    <!-- USDT CARD -->
+    <div class="pcard usdt">
+      <div class="plbl">💚 USDT · TRC20 Network</div>
+      <div class="pname">Tether (USDT)</div>
+      <div class="pdesc">Send via TRC20 network only. Do not use ERC20 or BEP20 — funds will be lost.</div>
+      <div class="paddr">
+        TTWYTUp1VEbTkQJcwnmujwsfKJ6Ud3Y3au
+        <button class="pcopy" onclick="copyAddr(this,'TTWYTUp1VEbTkQJcwnmujwsfKJ6Ud3Y3au')">Copy</button>
+      </div>
+      <div class="pamt">
+        <span class="pamtlbl">Amount to send:</span>
+        <span class="pamtval" id="pay-usdt-amt">$0 USDT</span>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="bot">
+  <button class="btn" onclick="confirmPayment()" style="background:linear-gradient(135deg,#1a8c5e,var(--acc))">✅ I've Paid — Confirm Booking</button>
+</div>
+</div>
+
+<!-- ══════ SCREEN 4: SUCCESS ══════ -->
+<div id="s-success" class="scr">
+<div class="app">
+  <div class="sucwrap">
+    <div class="sucico">✅</div>
+    <div class="suctitle">Booking Confirmed!</div>
+    <div class="sucdesc">Your payment confirmation has been received. You'll be contacted on Telegram shortly to begin your session.</div>
+    <div class="sucref" id="ref-num">REF #TF-0000</div>
+    <div class="sucsteps">
+      <div class="ssteph">What happens next:</div>
+      <div class="sstep"><div class="snum">1</div><div class="stxt"><strong>Payment Verified</strong> — We confirm your USDT payment within 10 minutes.</div></div>
+      <div class="sstep"><div class="snum">2</div><div class="stxt"><strong>Session Starts</strong> — We message you on Telegram and begin your fix immediately.</div></div>
+      <div class="sstep"><div class="snum">3</div><div class="stxt"><strong>Problem Solved</strong> — We guide you step-by-step until your issue is 100% fixed.</div></div>
+    </div>
+    <button onclick="resetApp()" style="margin-top:18px;background:transparent;border:.5px solid var(--bd2);border-radius:var(--rs);padding:9px 22px;color:var(--txt2);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer">← Book Another Service</button>
+  </div>
+</div>
+</div>
+
+<script>
+const tg = window.Telegram?.WebApp;
+if(tg){tg.ready();tg.expand();tg.setHeaderColor('#08080E');tg.setBackgroundColor('#08080E')}
+
+let svc = null;
+
+function selSvc(el){
+  document.querySelectorAll('.sc').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+  svc = {id:el.dataset.id, name:el.dataset.name, price:parseFloat(el.dataset.price)};
+  const btn = document.getElementById('home-cta');
+  btn.classList.remove('dis');
+  btn.textContent = 'Continue — ' + svc.name + ' →';
+  updTotal();
+}
+
+function updTotal(){
+  if(!svc) return;
+  const urg = document.getElementById('urg-tog').checked;
+  const total = svc.price + (urg ? 2 : 0);
+  document.getElementById('sum-svc').textContent = svc.name;
+  document.getElementById('sum-pri').textContent = urg ? '⚡ Express (+$2)' : 'Standard';
+  document.getElementById('sum-tot').textContent = '$' + total.toFixed(0) + ' USDT';
+  document.getElementById('pay-usdt-amt').textContent = '$' + total.toFixed(0) + ' USDT';
+}
+
+function showScr(id){
+  document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  window.scrollTo(0,0);
+}
+
+function goToForm(){
+  if(!svc) return;
+  updTotal();
+  showScr('s-form');
+}
+
+function goBack(id){ showScr(id); }
+
+function goToPayment(){
+  const name = document.getElementById('f-name').value.trim();
+  const user = document.getElementById('f-user').value.trim();
+  const desc = document.getElementById('f-desc').value.trim();
+  if(!name || !user || !desc){
+    if(tg) tg.showAlert('Please fill in all fields before continuing.');
+    else alert('Please fill in all fields.');
+    return;
+  }
+  updTotal();
+  showScr('s-payment');
+}
+
+function copyAddr(btn, addr){
+  navigator.clipboard.writeText(addr).then(()=>{
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(()=>{ btn.textContent='Copy'; btn.classList.remove('copied'); }, 2000);
+  }).catch(()=>{
+    // fallback
+    const el = document.createElement('textarea');
+    el.value = addr; document.body.appendChild(el);
+    el.select(); document.execCommand('copy'); document.body.removeChild(el);
+    btn.textContent = 'Copied!';
+    setTimeout(()=>{ btn.textContent='Copy'; }, 2000);
+  });
+}
+
+function confirmPayment(){
+  const ref = 'TF-' + Math.floor(Math.random()*9000+1000);
+  document.getElementById('ref-num').textContent = 'REF #' + ref;
+  const urg = document.getElementById('urg-tog').checked;
+  const total = svc.price + (urg ? 2 : 0);
+  if(tg && tg.sendData){
+    tg.sendData(JSON.stringify({
+      ref, service: svc.name, total_usd: total, express: urg,
+      name: document.getElementById('f-name').value.trim(),
+      username: document.getElementById('f-user').value.trim(),
+      desc: document.getElementById('f-desc').value.trim(),
+      payment: 'USDT TRC20'
+    }));
+  }
+  showScr('s-success');
+}
+
+function resetApp(){
+  svc = null;
+  document.querySelectorAll('.sc').forEach(c=>c.classList.remove('sel'));
+  const btn = document.getElementById('home-cta');
+  btn.classList.add('dis');
+  btn.textContent = 'Select a Service to Continue →';
+  ['f-name','f-user','f-desc'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('urg-tog').checked = false;
+  showScr('s-home');
+}
+</script>
+</body>
+</html>
